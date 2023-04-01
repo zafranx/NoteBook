@@ -1,0 +1,24 @@
+.postImageWrapper {
+  height: 450px;
+  overflow: hidden;
+}
+
+.postImageWrapper img {
+  width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+.img-max {
+  /* max-width: 500px; */
+  width:100%;
+}
+.bgimg {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  /* background-image: url("https://www.transparenttextures.com/patterns/cubes.png"); */
+  /* background-image: url(http://www.transparenttextures.com/patterns/brick-wall-dark.png); */
+  background-image: url ("/Users/alimuddin/Desktop/React by zafran/AProject/BlogApp/public/Images/1000_F_518534996_FHFmf9ySfZLS5xmYgaEohI18xifwaEDM.jpeg");
+
+  /* padding: 0 16px; */
+}

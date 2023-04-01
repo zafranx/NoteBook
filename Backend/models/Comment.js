@@ -1,23 +1,18 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const NotesSchema = new Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
-  },
-  title: {
+const CommentSchema = new Schema({
+  //   user: {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "user",
+  //   },
+  userName: {
     type: String,
-    required: true,
+    // required: true,
   },
-  description: {
+  commentText: {
     type: String,
     required: true,
     // agar unique true hatane ke bad bhi descreption nhi  add ho or erro batae to database se Note ka collection delete kr de to shi ho jaega
-  },
-
-  tag: {
-    type: String,
-    // required: "General",
   },
   date: {
     type: Date,
@@ -25,4 +20,4 @@ const NotesSchema = new Schema({
   },
   buff: Buffer,
 });
-module.exports = mongoose.model("notes", NotesSchema);
+module.exports = mongoose.model("comments", CommentSchema);

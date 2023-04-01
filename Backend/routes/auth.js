@@ -6,6 +6,7 @@ const User = require("../models/User");
 var jwt = require("jsonwebtoken");
 const JWT_SECRET = "scienceislife";
 var fetchuser = require("../middleware/fetchuser");
+let success = false;
 
 // ROUTE 1: Create a User using: POST "/api/auth/createuser". No login required
 router.post(
@@ -29,9 +30,13 @@ router.post(
       let user = await User.findOne({ email: req.body.email });
       console.log(user);
       if (user) {
+        // success = false;
         return res
           .status(400)
-          .json({ error: "Sorry a user with this email already exists" });
+          .json({
+            success: "false",
+            error: "Sorry a user with this email already exists",
+          });
       }
       // for password hashing
       const salt = await bcrypt.genSalt(10);
@@ -48,9 +53,11 @@ router.post(
         },
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
-      // console.log(authtoken)
+      console.log(authtoken);
+
       // res.json(user);
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
       // catch error
     } catch (error) {
       console.error(error.message);
@@ -69,7 +76,6 @@ router.post(
 
   async (req, res) => {
     // If there are errors, return Bad request and the errors
-    let success = false
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -78,16 +84,17 @@ router.post(
     try {
       let user = await User.findOne({ email });
       if (!user) {
-        success = false
         return res
           .status(400)
           .json({ error: "please try to login with correct credentials" });
       }
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
-        return res
-          .status(400)
-          .json({ error: "please try to login with correct credentials" });
+        success = false;
+        return res.status(400).json({
+          success,
+          error: "please try to login with correct credentials",
+        });
       }
       const data = {
         user: {
@@ -95,7 +102,8 @@ router.post(
         },
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal server error");
@@ -105,12 +113,27 @@ router.post(
 // ROUTE 3: Get loggedin User Details using: POST "/api/auth/getuser". Login required
 router.post("/getuser", fetchuser, async (req, res) => {
   try {
-    userId = req.user.id;
+    let userId = req.user.id;
     const user = await User.findById(userId).select("-password");
     res.send(user);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Internal server error");
+  }
+});
+router.delete("/deleteuser/:id", fetchuser, async (req, res) => {
+  try {
+    console.log(req.params.id);
+    let userId = req.user.id;
+    const user = await User.findByIdAndDelete(userId);
+    // add code to delete all notes of users
+    // res.send(user);
+
+    // console.log(req.params.id)
+    res.json({ Success: "User has been deleted", user: user });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
   }
 });
 
