@@ -1,6 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+
+// import { RxSwitch } from "react-icons/rx";
+
 
 export default function Navbar(props) {
   let nevigate = useNavigate();
@@ -14,15 +17,41 @@ export default function Navbar(props) {
     console.log(location.pathname);
   }, [location]);
 
-  // Time
-  
+  // set theme to dark and light
+  const [theme, setTheme] = useState("light");
+  const toggleTheme = () => {
+    if (theme === "light") {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  };
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
+
   return (
     <div className="">
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark ">
+      <nav
+        className="navbar navbar-expand-lg navbar-dark bg-dark "
+        // className="navbar navbar-expand-lg navbar-light" style={{backgroundColor: "rgb(14 30 65)"}}
+      >
         <div className="container-fluid">
           <Link className=" navbar-brand mx-2" to="/">
             {props.title}
           </Link>
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col ">
+            {/* <div class="full"> */}
+            {/* <div class="center-desk"> */}
+            {/* <div class="logo">
+              {" "}
+              <Link to="/">
+                <img src="images/imgpsh_fullsize_anim.png" alt="logo" />
+              </Link>{" "}
+            </div> */}
+            {/* </div> */}
+            {/* </div> */}
+          </div>
           <button
             class="navbar-toggler"
             type="button"
@@ -37,6 +66,7 @@ export default function Navbar(props) {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mx-auto mb-2  mb-lg-0">
               {/* ms-auto */}
+
               <li className="nav-item">
                 <Link
                   className={`nav-link mx-2 
@@ -65,6 +95,20 @@ export default function Navbar(props) {
                 <Link
                   className={`nav-link mx-2 
                   ${
+                    location.pathname === "/cryptocoins"
+                      ? "active navbar-brand"
+                      : ""
+                  }`}
+                  aria-current="page"
+                  to="/cryptocoins"
+                >
+                  {props.cryptocoins}
+                </Link>
+              </li>
+              {/* <li className="nav-item">
+                <Link
+                  className={`nav-link mx-2 
+                  ${
                     location.pathname === "/admin" ? "active navbar-brand" : ""
                   }`}
                   aria-current="page"
@@ -72,7 +116,7 @@ export default function Navbar(props) {
                 >
                   {props.admin}
                 </Link>
-              </li>
+              </li> */}
 
               <li className="nav-item">
                 <Link
@@ -87,9 +131,26 @@ export default function Navbar(props) {
             </ul>
             <li className="d-flex">
               {/* <h5 className="text-primary mt-0 mx-2 my-2">{time}</h5> */}
+              <div>
+                <div className="form-check form-switch">
+                  <input
+                    onClick={toggleTheme}
+                    className="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="flexSwitchCheckChecked"
+                    // checked
+                  />
+                  <label
+                    className="form-check-label"
+                    for="flexSwitchCheckChecked"
+                  ></label>
+                </div>
+              </div>
             </li>
+
             {!localStorage.getItem("token") ? (
-              <form className="d-flex">
+              <form className="d-flex mt-2 mb-2">
                 <Link
                   className={`nav-link  mx-2  ${
                     location.pathname === "/login" ? "active navbar-brand" : ""
@@ -100,6 +161,7 @@ export default function Navbar(props) {
                     {" "}
                     {props.login}
                   </button>
+                  {/* <p className="text-white">{props.login}</p> */}
                 </Link>
 
                 <Link
@@ -111,17 +173,89 @@ export default function Navbar(props) {
                   <button className="btn btn-outline-info">
                     {props.signup}
                   </button>
+                  {/* <p className="text-white">{props.signup}</p> */}
                 </Link>
               </form>
             ) : (
-              <button onClick={handleLogout} className="btn btn-primary">
-                Logout
-              </button>
+              <>
+                <ul className="navbar-nav  mb-2  mb-lg-0">
+                  <li className="nav-item dropdown">
+                    <div
+                      className="nav-link dropdown-toggle text-white"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Profile
+                    </div>
+                    <ul className="dropdown-menu bg-dark">
+                      <li>
+                        <div className="dropdown-item" to="">
+                          <p className="  text-success">
+                            {localStorage.getItem("name")}
+                          </p>
+                          <p className="  text-success">
+                            {localStorage.getItem("email")}
+                          </p>
+                          {/* <p className="  text-success">{UserDetails.name}</p>
+                          <p className="  text-success">{UserDetails.email}</p> */}
+                        </div>
+                      </li>
+
+                      <li className="nav-item">
+                        <Link
+                          className={`nav-link mx-2 
+                           ${
+                             location.pathname === "/admin"
+                               ? " navbar-brand"
+                               : ""
+                           }`}
+                          aria-current="page"
+                          to="/admin"
+                        >
+                          {props.admin}
+                        </Link>
+                      </li>
+
+                      <li className="nav-item">
+                        <Link
+                          className={`nav-link mx-2 
+                           ${
+                             location.pathname === "/blogadmin"
+                               ? " navbar-brand"
+                               : ""
+                           }`}
+                          aria-current="page"
+                          to="/blogadmin"
+                        >
+                          {props.blogadmin}
+                        </Link>
+                      </li>
+
+                      <li>
+                        <div className="dropdown-item ">
+                          {" "}
+                          <button
+                            onClick={handleLogout}
+                            className="btn btn-info"
+                          >
+                            Logout
+                          </button>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+
+                {/* <button onClick={handleLogout} className="btn btn-primary">
+                  Logout
+                </button> */}
+              </>
             )}
 
             {/* props.search bar use in app.js as a props  */}
             {props.searchBar ? (
-              <form className="d-flex" role="search">
+              <form className="d-flex mx-2 mt-sm-2 " role="search">
                 <input
                   className="form-control me-2"
                   type="search"
@@ -152,6 +286,7 @@ Navbar.defaultProps = {
   title: "set title here",
   home: "Home",
   admin: "Admin",
+  blogadmin: "Blog Admin",
   about: "About Us",
   searchBar: "true",
 };

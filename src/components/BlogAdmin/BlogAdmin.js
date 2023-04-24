@@ -1,112 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import JoditEditor from "jodit-react";
+import { useNavigate } from "react-router-dom";
 
 const BlogAdmin = () => {
-  // const [user, setUser] = useState({
-  //   title: "",
-  //   // thumbnail: "",
-  //   content: "",
-  //   tag: "",
-  // });
-
-  // const { title, content, tag } = user;
-  // const handleInputs = (e) => {
-  //   // const {name,value} = e.target;
-  //   setUser({ ...user, [e.target.name]: e.target.value });
-  //   console.log("Onchange", user);
-  // };
-
-  // blog image function
-  // const [image, setImage] = useState(null);
-  // const [thumbnail, setThumbnail] = useState(null);
-  // const handleImageChange = (e) => {
-  //   setThumbnail(e.target.files[0]);
-  //   console.log(thumbnail);
-  //   setThumbnail(URL.createObjectURL(e.target.files[0]));
-  // };
-  
+  let nevigate = useNavigate();
+  const editor = useRef(null);
+  const config = {
+    placeholder: "Start typing post...",
+  };
   const [title, setTitle] = useState("");
-  const [ content,setContent] = useState("");
+  const [content, setContent] = useState("");
   const [tag, setTag] = useState("");
   const [profile, setProfile] = useState(null);
   const handleImageChange = (e) => {
     setProfile(e.target.files[0]);
-    console.log(profile);
+    // console.log(profile);
     // setProfile(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleOnClick = async (e) => {
     // console.log("User Post", user);
     e.preventDefault();
-    // toast("success ", {
-    //   type: 'success'
-    // });
-    //  toast("Added Successfully!", {
-    //   // type: 'success',
-    //     position: "bottom-center",
-    //     autoClose: 3000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "light",
-    //   });
 
     const formData = new FormData();
-    // formData.append ("thumbnail",thumbnail);
-
     formData.append("title", title);
     formData.append("profile", profile);
-    console.log(profile);
+    // console.log(profile);
     formData.append("content", content);
     formData.append("tag", tag);
-    // console.log(user)
-    await axios
-      .post("http://localhost:8000/api/blog/addpost", formData)
-      .then((res) => {
-        console.log(res);
+    // console.log("append_formdata", formData);
+
+    if (localStorage.getItem("token")) {
+      await axios
+        .post(
+          "http://localhost:8000/api/blog/addpost",
+          formData
+          // this header is used to check user authentication
+          //  {   
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     "auth-token": localStorage.getItem("token"),
+          //   },
+          // }
+        )
+        .then((res) => {
+          console.log(res);
+        });
+      toast("Added Successfully!", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
-    // toast("success ", {
-    //   type: 'success'
-    // });
-    toast("Added Successfully!", {
-      position: "bottom-center",
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-    // setUser({
-    //   title: "",
-    //   thumbnail: "",
-    //   content: "",
-    //   tag:"",
-    // });
+      // setUser({
+      //   title: "",
+      //   profile: "",
+      //   content: "",
+      //   tag:"",
+      // });
+      nevigate("/articles")
+    } else {
+      nevigate("/login");
+    }
   };
 
   return (
     <>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       <div
         // style={{ width: "650px" }}
-        className="mt-5 mx-auto  col-lg-6"
+        className="mt-5 mx-auto container col-lg-12"
         //  className="container mt-5 my-3"
       >
         <h3 className="text-info ">Add Post </h3>
@@ -128,7 +97,7 @@ const BlogAdmin = () => {
               // }}
               onChange={(e) => {
                 setTitle(e.target.value);
-                console.log(title);
+                // console.log(title);
               }}
               minLength={2}
               // required
@@ -150,8 +119,6 @@ const BlogAdmin = () => {
               //   setImage(e.target.files[0]);
               //   console.log(image);
               //   setImage(URL.createObjectURL(e.target.files[0]));
-              //   // setUser({ ...user });
-              //   //     console.log(user);
               // }}
               onChange={handleImageChange}
               // required
@@ -160,17 +127,10 @@ const BlogAdmin = () => {
               className="form-control mx-2  bg-gradient"
               type="file"
               id="formFile"
-              // value={image}
               name="profile"
-              required
-              // onChange={(e) => {
-              //   ImageUpload(e);
-              // }}
-              // onChange={handleFileChange}
+              accept=".png,.jpeg"
+              // required
               onChange={handleImageChange}
-              // onChange={(e) => {
-              //   handleInputs(e);
-              // }}
             />
           </div>
           {profile && (
@@ -182,19 +142,33 @@ const BlogAdmin = () => {
               style={{ width: "200px", height: "100px" }}
             />
           )}
-          {/* {thumbnail && (
-            <img
-              className="col-sm-4"
-              src={thumbnail && thumbnail}
-              alt=""
-              style={{ width: "200px", height: "100px" }}
+          <div className="mb-3">
+            <label htmlFor="tag" className="form-label text-info">
+              Tag
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="tag"
+              name="tag"
+              placeholder="Write tags"
+              value={tag}
+              // onChange={(e) => {
+              //   handleInputs(e);
+              // }}
+              onChange={(e) => {
+                setTag(e.target.value);
+                // console.log(tag);
+              }}
+              minLength={2}
+              // required
             />
-          )} */}
+          </div>
           <div className="mb-3">
             <label htmlFor="Content" className="form-label text-info">
               Content
             </label>
-            <textarea
+            {/* <textarea
               type="text"
               className="form-control"
               id="Content"
@@ -212,40 +186,33 @@ const BlogAdmin = () => {
               }}
               minLength={3}
               // required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="tag" className="form-label text-info">
-              Tag
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="tag"
-              name="tag"
-              placeholder="Write tags"
-              value={tag}
-              // onChange={(e) => {
-              //   handleInputs(e);
-              // }}
-              onChange={(e) => {
-                setTag(e.target.value);
-                console.log(tag);
+            /> */}
+            <JoditEditor
+              ref={editor}
+              value={content}
+              config={config}
+              name="message"
+              tabIndex={1} // tabIndex of textarea
+              onBlur={(newContent) => {
+                setContent(newContent);
+                // console.log(content);
               }}
-              minLength={2}
-              // required
+              // onBlur={(newContent) => setUser({ ...user, content: newContent })} // preferred to use only this option to update the content for performance reasons
+              // onChange={(newContent) => {}}
             />
+            {/* <p dangerouslySetInnerHTML={{__html: content}}></p> */}
           </div>
 
           <button
             // disabled={note.title.length < 5 || note.description.length < 5}
+
             type="submit"
-            className="btn btn-outline-info"
+            className="btn btn-outline-success container"
             onClick={(e) => {
               handleOnClick(e);
             }}
           >
-            Post
+            Publish Blog
           </button>
         </form>
       </div>

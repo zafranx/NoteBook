@@ -1,5 +1,7 @@
 .App {
-  text-align: center;
+  text-align: center; 
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'IBM Plex Sans Condensed', sans-serif;
 }
 /* style */
 * {
@@ -7,20 +9,33 @@
   margin: 0;
   box-sizing: border-box;
 }
+.dark {
+  background-color: hsl(0, 0%, 0%);
+  /* color: #fff; */
+}
+.light {
+  /* background-color: hsl(252, 70%, 77%); */
+  background-color: hsl(252, 39%, 43%);
+  /* color: #333; */
+}
 body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  /* background-color: #eeeeee; */
-  /* background-image: url("https://www.transparenttextures.com/patterns/cubes.png"); */
-  background-image: url(https://wallpaper-house.com/data/out/8/wallpaper2you_237884.jpg);
-  background-color: #002933;
-  /* background-image: url("https://www.transparenttextures.com/patterns/brushed-alum.png"); */
+  font-family: 'IBM Plex Sans', sans-serif;
+font-family: 'IBM Plex Sans Condensed', sans-serif;
+  /* background-image: ("BlogApp/Backend/blogimage/1680341299789.png"); */
+  /* background-color: #a95050; */
+  /* background-image: url(https://www.transparenttextures.com/patterns/cubes.png); */
+  /* background-image: url(https://wallpaper-house.com/data/out/8/wallpaper2you_237884.jpg); */
+  /* background-color: #002933; */
+  /* background-image: url(https://www.transparenttextures.com/patterns/brushed-alum.png); */
   /* padding: 0 16px; */
 }
 
 html {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'IBM Plex Sans Condensed', sans-serif;
 }
 footer {
   /* position: sticky; */

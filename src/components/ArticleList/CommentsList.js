@@ -32,7 +32,6 @@ const CommentsList = () => {
     console.log(data);
   };
   useEffect(() => {
-    // eslint-disable-next-line
     // comment(comment);
     comment();
     // eslint-disable-next-line
@@ -64,7 +63,7 @@ const CommentsList = () => {
   const deleteCommentButton = async (id) => {
     // id.preventDefault();
     if (localStorage.getItem("token")) {
-      if (window.confirm("Sure Want To Delete?")) {
+      if (window.confirm("Sure Want To Delete Comment?")) {
         console.log(id);
         await axios
           .delete(`http://localhost:8000/api/blog/deletecomment/${id}`)
@@ -121,13 +120,13 @@ const CommentsList = () => {
           <div className="">
             <div
               // style = {{width: "500px"}}
-              className="card mt-2 my-4 mx-5"
+              className="card mt-2 my-4 mx-5 "
             >
-              <div className="card-body bg-dark  ">
-                <p className="flex-justify-center text-center fs-6 text-info text-bold ">
+              <div className="card-body   ">
+                <p className="flex-justify-center text-center fs-6 text- text-bold ">
                   {comment.userName}:
                 </p>
-                <p className="flex-justify-center fs-6 text-white text-center">
+                <p className="flex-justify-center fs-6  text-center">
                   {comment.commentText}
                 </p>
                 {/* <p className="flex-justify-center fs-6 text-white text-center">

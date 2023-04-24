@@ -102,7 +102,7 @@ router.delete("/deletecomment/:id", async (req, res) => {
 });
 
 // API blog Post with image
-router.use("/uploads", express.static("uploads"));
+// router.use("/blogimage", express.static("blogimage")); isko index.js file eme use karte hai
 router.use(express.urlencoded({ extended: true }));
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -120,15 +120,14 @@ const cpUpload = upload.fields([
   { name: "profile", maxCount: 1 },
   // { name: "gallery", maxCount: 10 },
 ]);
-
+// post blog api
 router.post("/addpost", cpUpload, async (req, res) => {
   const profile = req.files["profile"][0];
-  console.log("profile", profile);
+  // console.log("profile", profile);
 
   try {
     const obj = JSON.parse(JSON.stringify(req.body));
-    //  name and comment  request from body or frontend comment form
-    console.log("body", req.body);
+    // console.log("body", req.body);
     // If there are errors, return Bad request and the errors
     // const errors = validationResult(req);
     // if (!errors.isEmpty()) {
@@ -144,13 +143,108 @@ router.post("/addpost", cpUpload, async (req, res) => {
     if (profile) {
       blogpost.profile = profile.path;
     }
+    // else{
+    //   blogpost.profile = null;
+    // }
 
     await blogpost
       .save()
       .then(() => res.send("Successfully Submitted Post"))
       .catch((err) => console.log(err));
 
-    console.log("blogpost", blogpost);
+    // console.log("blogpost", blogpost);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+//  get blog data api
+router.get("/getposts", async (req, res) => {
+  try {
+    const blogpost = await BlogPost.find();
+    res.json(blogpost);
+    // console.log(blogpost);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+router.get("/getpostsbyid/:id", async (req, res) => {
+  try {
+    console.log(req.params.id);
+    const blogpost = await BlogPost.findById(req.params.id);
+    res.json(blogpost);
+    // console.log(blogpost);
+    if (!blogpost) {
+      return res.status(404).send("Not Found");
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+// Delete blog data
+router.delete("/deleteblog/:id", async (req, res) => {
+  try {
+    console.log(req.params.id);
+    // Find the note to be delete and delete it
+    let blogpost = await BlogPost.findById(req.params.id);
+    if (!blogpost) {
+      return res.status(404).send("Not Found");
+    }
+    // Allow deletion only if user owns this Note
+    // if (blogpost.user.toString() !== req.user.id) {
+    //   return res.status(401).send("Not Allowed");
+    // }
+    blogpost = await BlogPost.findByIdAndDelete(req.params.id);
+    // console.log(req.params.id);
+
+    res.json({ Success: "Blog Data has been deleted", blogpost: blogpost });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+// Update blog data
+router.put("/updateblog/:id", cpUpload, async (req, res) => {
+  const profile = req.files;
+  // const profile = req.files["profile"][0];
+
+  const { title, content, tag } = req.body;
+  try {
+    console.log("profile", profile);
+    console.log("bodys", req.body);
+    console.log("file", req.files);
+
+    // Create a newNote object
+    const newBlog = {};
+    if (title) {
+      newBlog.title = title;
+    }
+    if (profile) {
+      newBlog.profile = profile.path;
+    }
+    // else (!profile){
+    //   newBlog.profile = null;
+    // }
+    if (content) {
+      newBlog.content = content;
+    }
+    if (tag) {
+      newBlog.tag = tag;
+    }
+
+    console.log(req.params.id);
+    // Find the blog to be updated and update it
+    let Blogdata = await BlogPost.findById(req.params.id);
+    // console.log(Blogdata);
+
+    Blogdata = await BlogPost.findByIdAndUpdate(
+      req.params.id,
+      { $set: newBlog },
+      { new: true }
+    );
+    res.json({ Success: "Blog has been Updated", Blogdata: Blogdata });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Internal Server Error");

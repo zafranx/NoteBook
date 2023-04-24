@@ -7,11 +7,12 @@ const app = express();
 app.use(cors());
 const port = 8000;
 app.use(express.json());
-
+app.use("/blogimage", express.static("blogimage"));
 // Available Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/notes", require("./routes/notes"));
 app.use("/api/blog", require("./routes/blog"));
+
 
 app.get("/", (req, res) => res.send("Hello Zafran"));
 app.listen(port, () => {

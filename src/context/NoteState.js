@@ -1,7 +1,12 @@
 import NoteContext from "./noteContext";
 import { useState } from "react";
+import axios from "axios";
+// import { useNavigate } from "react-router-dom";
 
 const NoteState = (props) => {
+
+  // let nevigate = useNavigate();
+  const [user,setUser] = useState("")
   const host = "http://localhost:8000";
   const notesInitial = [];
   const [notes, setNotes] = useState(notesInitial);
@@ -89,10 +94,51 @@ const NoteState = (props) => {
     }
     setNotes(newNotes);
   };
+  // for Blogs sync
+  const [data, setdata] = useState([]);
+  const GetBlog = async () => {
+    let res = await axios.get(`http://localhost:8000/api/blog/getposts`);
+    // console.log("res",response);
+    console.log("res", res.data);
+    setdata(res.data);
+    console.log(data);
+    // let imageUrl = URL.createObjectURL(res.data);
+    // setImage(imageUrl);
+  };
+  const [databyid, setdatabyid] = useState([]);
+  const GetBlogById = async (id) => {
+    let res = await axios.get(`http://localhost:8000/api/blog/getpostsbyid/${id}`);
+    // console.log("res",response);
+    console.log("res", res);
+    setdatabyid(res.data);
+    // console.log(databyid);
+  };
+
+  
+
+  // not in use
+  // const deletePost = async (id) => {
+  //   // id.preventDefault();
+  //   if (localStorage.getItem("token")) {
+  //     if (window.confirm("Sure Want To Delete?")) {
+  //       console.log(id);
+  //       await axios
+  //         .delete(`http://localhost:8000/api/blog/deleteblog/${id}`)
+  //         .then((res) => {
+  //           console.log(res);
+  //           // comment();
+  //           // alert("You SuccessFully Deleted The Comment");
+  //         });
+  //     }
+  //   }
+  //   // else {
+  //   //   nevigate("/login");
+  //   // }
+  // };
 
   return (
     <NoteContext.Provider
-      value={{ notes, addNote, deleteNote, editNote, getNotes ,allUserPost}}
+      value={{ notes, addNote, deleteNote, editNote, getNotes ,allUserPost,user,setUser,GetBlog,data,GetBlogById,databyid,}}
     >
       {props.children}
     </NoteContext.Provider>
@@ -100,103 +146,3 @@ const NoteState = (props) => {
 };
 export default NoteState;
 
-// import NoteContext from "./noteContext";
-// import { useState } from "react";
-// const NoteState = (props) => {
-//   const notesInitial = [
-//     {
-//       _id: "6401ae7c2c53aebe86ee0d01",
-//       user: "6401a7b2d23bf9e0b43a124d",
-//       title: "Bitcoin",
-//       description: "This is my new note ",
-//       tag: "personal",
-//       date: "2023-03-03T08:23:24.705Z",
-//       __v: 0,
-//     },
-//     {
-//       _id: "6401ae872c53aebe86ee0d03",
-//       user: "6401a7b2d23bf9e0b43a124d",
-//       title: "Ethereum",
-//       description: "This is my new note ",
-//       tag: "personal",
-//       date: "2023-03-03T08:23:35.569Z",
-//       __v: 0,
-//     },
-//     {
-//       _id: "6401bcaebc497cde6389964b",
-//       user: "6401a7b2d23bf9e0b43a124d",
-//       title: "ChainLink",
-//       description: "This is my new note ",
-//       tag: "personal",
-//       date: "2023-03-03T09:23:58.121Z",
-//       __v: 0,
-//     },
-//     {
-//       _id: "6401bcb2bc497cde6389964d",
-//       user: "6401a7b2d23bf9e0b43a124d",
-//       title: "ChainLink",
-//       description: "This is my new note ",
-//       tag: "personal",
-//       date: "2023-03-03T09:24:02.081Z",
-//       __v: 0,
-//     },
-//     {
-//       _id: "6401bcb2bc497cde6389964d",
-//       user: "6401a7b2d23bf9e0b43a124d",
-//       title: "ChainLink",
-//       description: "This is my new note ",
-//       tag: "personal",
-//       date: "2023-03-03T09:24:02.081Z",
-//       __v: 0,
-//     },
-//     {
-//       _id: "6401bcb2bc497cde6389964d",
-//       user: "6401a7b2d23bf9e0b43a124d",
-//       title: "ChainLink",
-//       description: "This is my new note ",
-//       tag: "personal",
-//       date: "2023-03-03T09:24:02.081Z",
-//       __v: 0,
-//     },
-//     {
-//       _id: "6401bcb2bc497cde6389964d",
-//       user: "6401a7b2d23bf9e0b43a124d",
-//       title: "ChainLink",
-//       description: "This is my new note ",
-//       tag: "personal",
-//       date: "2023-03-03T09:24:02.081Z",
-//       __v: 0,
-//     },
-//     {
-//       _id: "6401bcb2bc497cde6389964d",
-//       user: "6401a7b2d23bf9e0b43a124d",
-//       title: "ChainLink",
-//       description: "This is my new note ",
-//       tag: "personal",
-//       date: "2023-03-03T09:24:02.081Z",
-//       __v: 0,
-//     },
-//   ];
-//   const [notes, setNotes] = useState(notesInitial);
-
-//     // const s1 = {
-//     //   name: "Harry",
-//     //   class: "12",
-//     // };
-//     // const [state, setState] = useState(s1);
-//     // const update = () => {
-//     //   setTimeout(() => {
-//     //     setState({
-//     //       name: "zafran",
-//     //       class: "12",
-//     //     });
-//     //   }, 1000);
-//     // };
-
-//   return (
-//     <NoteContext.Provider value={{ notes, setNotes}}>
-//       {props.children}
-//     </NoteContext.Provider>
-//   );
-// };
-// export default NoteState;

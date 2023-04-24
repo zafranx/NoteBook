@@ -29,34 +29,46 @@ const Article = () => {
 
   return (
     <div className="Article container mt-2">
-
       {/* fw-bold  for bold text*/}
-      <div className="row">
-      <h1 className="container"> {Article.title} </h1>
-      <img
-        className="col-lg-6 col-md-6 col-sm-12 "
-        src={article.thumbnail}
-        alt=""
-        style={{ width: "450px", height: "350px" }}
-      />
+      {/* <div className="row"> */}
+      <div className="text-center mt-3">
+        {/* <h1 className="container text-center text-info justify-content "> {article.title} </h1> */}
+        <img
+          className="col-lg-6 col-md-6 col-sm-12 "
+          src={article.thumbnail}
+          alt=""
+          // style={{ width: "550px", height: "410px" }}
+          style={{ width: "30rem", height: "20rem" }}
+        />
 
-      {article.content.map((paragraph,name,title, index) => (
-         
-        <p className="col-lg-6 col-md-4 col-sm-12  fs-4 mx-5 text-white text-center" key={index}>
-        {/* <h3>{article.name}</h3> */}
-       
-        <h3 className="text-center text-info ">{article.title}</h3>
-        <br/>
-          {paragraph}
-        </p>
-      ))}
+        {article.content.map((paragraph, name, title, index) => (
+          <div className="text-center mt-5">
+              <h3 className="text-center text-info justify-content  ">
+                {article.title}
+              </h3>
+              <p
+              className="  fs-5 text-info "
+              key={index}
+            >
+              {/* <h3>{article.name}</h3> */}
+            
+              {paragraph}
+            </p>
+          </div>
+        ))}
       </div>
+      <br/>
       <AddCommentForm articleName={name} setAritcleInfo={setArticleInfo} />
       <CommentsList comments={articleInfo.comments} />
       <h2 className="d-flex justify-content-center align-items-center">
-        <div className="d-flex align-items-center text-info">Other Articles</div>
+        <div className="d-flex align-items-center text-info">
+          Other Articles
+        </div>
       </h2>
-      <Articles className="display-flex container col-lg-4 col-md-6 " articles={otherArticles} />
+      <Articles
+        className="display-flex container col-lg-4 col-md-6 "
+        articles={otherArticles}
+      />
     </div>
   );
 };

@@ -51,7 +51,7 @@ const Noteitem = (props) => {
               <button className="btn btn-outline-info">
                 {" "}
                 Edit &nbsp;
-                <BiEditAlt />{" "}
+                <BiEditAlt />
               </button>
             </i>
           </div>
