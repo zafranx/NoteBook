@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const mongoURl =
-  "mongodb+srv://zafran:zafran786@clusterform.mtfzjnj.mongodb.net/ref_formData?retryWrites=true&w=majority";
+  "";
 // const database = 'Formdata'
 const connectToMongo = () => {
   mongoose.set("strictQuery", false);
